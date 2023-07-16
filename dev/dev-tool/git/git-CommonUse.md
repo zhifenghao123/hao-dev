@@ -1,0 +1,128 @@
+@[toc](目录)
+
+#一、将本地已有仓库推送到远程仓库
+这里说的就是，针对于将本地已经存在的代码推送到远程仓库（以github为例）
+##(一)本地操作
+###1、将本地项目初始化为本地仓库
+（1）先进入本地项目，使用```git init```初始化项目为本地仓库
+
+（2）此时，```git status```查看，会显示：
+
+----
+On branch master
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+        .gitignore
+        how-dev-scala-spark.iml
+        pom.xml
+        src/
+        test-datasets/
+
+nothing added to commit but untracked files present (use "git add" to track)
+
+----
+
+###2、将已有的代码做提交
+```git add .```
+
+```git commit -m "initial commit"```
+
+此时，在commit时，会有如下显示：
+
+----
+*** Please tell me who you are.
+
+Run
+
+  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
+
+to set your account's default identity.
+Omit --global to set the identity only in this repository.
+
+fatal: unable to auto-detect email address (got 'hzf@bogon.(none)')
+
+----
+
+###3、做git仓库配置
+```git config -f .git/config user.name github账号```
+
+```git config -f .git/config user.email github账号对应邮箱```
+
+###4、重新git commit
+```
+git commit -m "initial commit"
+```
+
+##远程仓库操作
+###5、在远程创建仓库（这里以github为例）
+这里操作勾选了：Initialize this repository with:
+
+###6、复制远程仓库地址：远程仓库的Code -》Clone -》SSH
+
+
+###7、回到本地，将本地仓库绑定到远程仓库
+```
+git remote add origin git@github.com:zhifenghao123/how-dev-scala-spark.git
+```
+
+8、拉取远程仓库内容到本地
+```
+git pull origin master
+```
+此时发现报错：
+
+----
+fatal: couldn't find remote ref master
+
+----
+原因：GitHub 官方表示，从今年 10 月 1 日起，在该平台上创建的所有新的源代码仓库将默认被命名为 "main"，而不是原先的"master"。
+因此，
+
+（1）应该拉取远程main分支
+```
+git pull origin main
+```
+此时，会显示：
+
+----
+warning: no common commits
+remote: Enumerating objects: 3, done.
+remote: Counting objects: 100% (3/3), done.
+remote: Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+Unpacking objects: 100% (3/3), done.
+From github.com:zhifenghao123/how-dev-scala-spark
+ * branch            main       -> FETCH_HEAD
+ * [new branch]      main       -> origin/main
+fatal: refusing to merge unrelated histories
+----
+因此，执行
+```
+git pull origin main --allow-unrelated-histories
+```
+
+所以，归于github，在第一次拉取远程仓库内容时，可以直接用
+```
+git pull origin main --allow-unrelated-histories
+```
+
+（2）修改本地已创建项目的主分支为main(仅对于github作为远程仓库时当前特殊)
+
+本地切换到主分支master执行（表把当前master分支改名为main, 其中-M的意思是移动或者重命名当前分支）
+```
+git branch -M main
+```
+
+###9、设置默认上传路径为origin并上传
+```
+git push --set-upstream origin main
+```
+
+后续本地提交时提交使用命令git push即可推送到远程仓库
+
+
+可参考：<https://blog.csdn.net/qq_46311811/article/details/122227579>
