@@ -7,7 +7,7 @@
 graph TD
 / --> boot
 / --> root
-/ --> bin
+/ --> bins
 / --> sbin
 / --> dev
 / --> etc
